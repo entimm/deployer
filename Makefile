@@ -139,7 +139,7 @@ build: ##@docker Builds the application
 	@cp -f ./docker/laravel_env .env
 	@$(MAKE) docker-install
 	@$(MAKE) docker-migrate
-	@sed -i "s/JWT_SECRET=changeme/JWT_SECRET=$(shell date +%s | sha256sum | base64 | head -c 32; echo)/g" .env
+	@sed -i "" "s/JWT_SECRET=changeme/JWT_SECRET=$(shell date +%s | sha256sum | base64 | head -c 32; echo)/g" .env
 	@docker-compose exec php-fpm php artisan key:generate --force
 	@docker-compose exec php-fpm php artisan deployer:create-user admin admin@example.com changeme --no-email
 
