@@ -15,20 +15,28 @@ services:
       - "6001:6001"
     links:
       - redis
+    networks:
+      - deployer
 
   beanstalkd:
     image: schickling/beanstalkd
     container_name: deployer-beanstalkd
+    networks:
+      - deployer
 
   mailhog:
     image: phpdockerio/mailhog:latest
     container_name: deployer-mailhog
     ports:
       - "8001:8025"
+    networks:
+      - deployer
 
   redis:
     image: phpdockerio/redis:latest
     container_name: deployer-redis
+    networks:
+      - deployer
 
   mysql:
     image: mysql:5.7
@@ -43,6 +51,8 @@ services:
       - MYSQL_PASSWORD=secret
     volumes:
       - data:/var/lib/mysql
+    networks:
+      - deployer
 
   nginx:
     image: phpdockerio/nginx:latest
@@ -56,6 +66,8 @@ services:
     links:
       - php-fpm
       - node
+    networks:
+      - deployer
 
   worker:
     build:
@@ -70,6 +82,8 @@ services:
       - beanstalkd
       - mysql
       - redis
+    networks:
+      - deployer
 
   composer:
     build:
@@ -83,6 +97,8 @@ services:
       - .:/application
     links:
       - mysql
+    networks:
+      - deployer
 
   php-fpm:
     build:
@@ -102,7 +118,13 @@ services:
       - mailhog
       - mysql
       - redis
+    networks:
+      - deployer
 
 volumes:
   data:
     driver: "local"
+
+networks:
+  deployer:
+    driver: bridge
